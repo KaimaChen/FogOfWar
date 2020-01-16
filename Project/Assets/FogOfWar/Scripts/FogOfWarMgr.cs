@@ -151,6 +151,9 @@ public class FogOfWarMgr : MonoBehaviour
             List<Vector2Int> tiles = GetCircleCoverTiles(unit.WorldPos, unit.m_range);
             for(int i = 0; i < tiles.Count; i++)
             {
+                if (tiles[i].x < 0 || tiles[i].x >= m_width || tiles[i].y < 0 || tiles[i].y >= m_height)
+                    Debug.LogError(tiles[i]);
+
                 if (!IsBlocked(startTile, tiles[i], unit))
                     m_visionGrid.SetVisible(tiles[i].x, tiles[i].y, unit.m_mask);
             }
