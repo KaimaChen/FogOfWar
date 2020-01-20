@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ImageEffect
+  m_Name: RawFogOfWar
   m_Shader: {fileID: 4800000, guid: 77372013e3cc8dd4b938ca159a335954, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

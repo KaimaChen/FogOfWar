@@ -25,15 +25,20 @@ public class Demo : MonoBehaviour
     void Start()
     {
         var mgr = FogOfWarMgr.Instance;
-        mgr.m_getUnitVisionsHandler += GetUnitVisions;
+        mgr.GetUnitVisionsHandler += GetUnitVisions;
 
-        float x = 90;
+        //创建障碍物，用于阻挡视线
+        Transform container = new GameObject("Obstacles").transform;
+        container.SetParent(transform);
+        int x = 91;
         for(int z = 40; z < 60; z++)
         {
-            mgr.TerrainGrid.SetAltitude(90, z, 2);
+            mgr.TerrainGrid.SetAltitude(x, z, 2);
 
             GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.name = "Obstacle";
             go.transform.position = new Vector3(x, 0, z);
+            go.transform.SetParent(container);
         }
     }
 

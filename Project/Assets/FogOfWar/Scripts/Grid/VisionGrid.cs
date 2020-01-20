@@ -23,10 +23,10 @@ public class VisionGrid : BaseGrid
         m_visited = new int[w * h];
     }
 
-    public void SetVisible(int x, int y, int playerMask)
+    public void SetVisible(int x, int y, int entityMask)
     {
-        m_values[Index(x, y)] |= playerMask;
-        m_visited[Index(x, y)] |= playerMask;
+        m_values[Index(x, y)] |= entityMask;
+        m_visited[Index(x, y)] |= entityMask;
     }
 
     public void Clear()
@@ -47,8 +47,8 @@ public class VisionGrid : BaseGrid
         return IsVisible(pos.x, pos.y, entityMask);
     }
 
-    public bool WasVisible(int x, int y, int playerMask)
+    public bool WasVisible(int x, int y, int entityMask)
     {
-        return (m_visited[Index(x, y)] & playerMask) > 0;
+        return (m_visited[Index(x, y)] & entityMask) > 0;
     }
 }
