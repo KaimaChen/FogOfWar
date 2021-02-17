@@ -111,7 +111,8 @@ public class FogOfWarMgr : MonoBehaviour
 
         InitRawRenderer();
         InitFinalRenderer();
-        InitCamera();
+        InitBlurCamera();
+        InitFOWCamera();
     }
 
     void OnDestroy()
@@ -275,21 +276,22 @@ public class FogOfWarMgr : MonoBehaviour
     {
         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
         go.name = "FinalRenderer";
+        go.layer = LayerMask.NameToLayer(Defines.c_LayerFogOfWar);
 
         Transform trans = go.transform;
         trans.SetParent(transform);
         m_finalRenderer = trans.GetComponent<MeshRenderer>();
         m_finalRenderer.sharedMaterial = new Material(Shader.Find("KaimaChen/FinalFogOfWar"));
 
-        //将最终的迷雾覆盖到整张地图（这里假设地图左下角是原点，如果有任何不一样，则需要自己另外设置）
+        //将最终的迷雾覆盖到整张地图（这里假设地图左下角是原点）
         trans.localScale = new Vector3(m_width * m_tileSize, m_height * m_tileSize, 1);
         trans.rotation = Quaternion.Euler(90, 0, 0);
         trans.position = new Vector3(trans.localScale.x / 2, 1, trans.localScale.y / 2);
     }
 
-    void InitCamera()
+    void InitBlurCamera()
     {
-        GameObject go = new GameObject("FogOfWarCamera");
+        GameObject go = new GameObject("BlurCamera");
         go.transform.SetParent(transform);
         go.AddComponent<Blur>();
 
@@ -297,10 +299,17 @@ public class FogOfWarMgr : MonoBehaviour
         cam.cullingMask = LayerMask.GetMask(Defines.c_LayerFogOfWar);
         cam.clearFlags = CameraClearFlags.Depth;
         cam.depth = Camera.main.depth + 1;
+        cam.useOcclusionCulling = false;
+        cam.allowHDR = false;
+        cam.allowMSAA = false;
 
         int width = m_width * 4;
         int height = m_height * 4;
-        RenderTexture rt = new RenderTexture(width, height, 0, RenderTextureFormat.R8);
+        var format = SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.R8) ? RenderTextureFormat.R8 : RenderTextureFormat.ARGB32;
+        RenderTexture rt = new RenderTexture(width, height, 0, format);
+        rt.antiAliasing = 1;
+        rt.filterMode = FilterMode.Bilinear;
+        rt.wrapMode = TextureWrapMode.Clamp;
 
         cam.targetTexture = rt;
         m_finalRenderer.sharedMaterial.mainTexture = rt;
@@ -309,6 +318,33 @@ public class FogOfWarMgr : MonoBehaviour
         cam.transform.position = new Vector3(pos.x, pos.y, pos.z - 1);
         cam.orthographicSize = 0.5f;
         cam.orthographic = true;
+    }
+
+    void InitFOWCamera()
+    {
+        GameObject go = new GameObject("FogOfWarCamera");
+        Camera cam = go.AddComponent<Camera>();
+        cam.cullingMask = LayerMask.GetMask(Defines.c_LayerFogOfWar);
+        cam.clearFlags = CameraClearFlags.Depth;
+
+        Camera main = Camera.main;
+        if(main != null)
+        {
+            cam.depth = main.depth + 1;
+            cam.fieldOfView = main.fieldOfView;
+            cam.nearClipPlane = main.nearClipPlane;
+            cam.farClipPlane = main.farClipPlane;
+            cam.rect = main.rect;
+            cam.useOcclusionCulling = false;
+            cam.allowHDR = false;
+            cam.allowMSAA = false;
+
+            var trans = cam.transform;
+            trans.SetParent(main.transform);
+            trans.localPosition = Vector3.zero;
+            trans.localScale = Vector3.one;
+            trans.localRotation = Quaternion.identity;
+        }
     }
     #endregion
 
