@@ -23,6 +23,11 @@ public struct UnitVision
     /// </summary>
     public short m_terrainHeight;
 
+    /// <summary>
+    /// 单位所在的草丛
+    /// </summary>
+    public short m_grassId;
+
     public GameObject m_gameObject;
 
     #region get-set
@@ -32,11 +37,12 @@ public struct UnitVision
     }
     #endregion
 
-    public UnitVision(GameObject go, int mask, float range, short height)
+    public UnitVision(GameObject go, int mask, float range, short height, short grassId)
     {
         m_gameObject = go;
         m_mask = mask;
         m_range = range;
         m_terrainHeight = height;
+        m_grassId = grassId;
     }
 }

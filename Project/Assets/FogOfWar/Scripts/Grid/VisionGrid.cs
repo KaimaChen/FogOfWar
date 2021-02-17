@@ -32,9 +32,7 @@ public class VisionGrid : BaseGrid
     public void Clear()
     {
         for(int i = 0; i < m_values.Length; i++)
-        {
             m_values[i] = 0;
-        }
     }
 
     public bool IsVisible(int x, int y, int entityMask)

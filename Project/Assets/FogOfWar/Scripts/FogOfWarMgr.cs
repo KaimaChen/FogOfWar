@@ -187,8 +187,11 @@ public class FogOfWarMgr : MonoBehaviour
         List<Vector2Int> points = Utils.LineByBresenhams(startTile, targetTile);
         for(int i = 0; i < points.Count; i++)
         {
-            short altitude = m_terrainGrid.GetAltitude(points[i]);
+            m_terrainGrid.GetData(points[i], out short altitude, out short grassId);
             if (altitude > unit.m_terrainHeight)
+                return true;
+
+            if (grassId != 0 && grassId != unit.m_grassId)
                 return true;
         }
 
@@ -349,11 +352,16 @@ public class FogOfWarMgr : MonoBehaviour
     #endregion
 
     #region 转换
-    Vector2Int WorldPosToTilePos(Vector2 worldPos)
+    public Vector2Int WorldPosToTilePos(Vector2 worldPos)
     {
         int x = (int)(worldPos.x / m_tileSize);
         int y = (int)(worldPos.y / m_tileSize);
         return new Vector2Int(x, y);
+    }
+
+    public Vector2Int WorldPosToTilePos(Vector3 worldPos)
+    {
+        return WorldPosToTilePos(new Vector2(worldPos.x, worldPos.z));
     }
     #endregion
 }

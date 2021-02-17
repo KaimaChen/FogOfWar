@@ -12,6 +12,8 @@ public class Demo : MonoBehaviour
         }
     }
 
+    public GameObject m_grassPrefab;
+
     readonly Dictionary<int, UnitVision> m_unitDict = new Dictionary<int, UnitVision>();
 
     void Awake()
@@ -27,6 +29,8 @@ public class Demo : MonoBehaviour
         var mgr = FogOfWarMgr.Instance;
         mgr.GetUnitVisionsHandler += GetUnitVisions;
 
+        ///实践使用中，设置障碍物和草丛都应该由地图编辑器完成
+        
         //创建障碍物，用于阻挡视线
         Transform container = new GameObject("Obstacles").transform;
         container.SetParent(transform);
@@ -39,6 +43,37 @@ public class Demo : MonoBehaviour
             go.name = "Obstacle";
             go.transform.position = new Vector3(x, 0, z);
             go.transform.SetParent(container);
+        }
+
+        //设置草丛
+        container = new GameObject("Grass").transform;
+        container.SetParent(transform);
+        for(x = 75; x < 85; x++)
+        {
+            for(int z = 30; z < 40; z++)
+            {
+                mgr.TerrainGrid.SetGrass(x, z, 1);
+
+                GameObject go = Instantiate(m_grassPrefab);
+                go.SetActive(true);
+                go.name = "Grass1";
+                go.transform.position = new Vector3(x, 0, z);
+                go.transform.SetParent(container);
+            }
+        }
+
+        for (x = 90; x < 95; x++)
+        {
+            for (int z = 30; z < 40; z++)
+            {
+                mgr.TerrainGrid.SetGrass(x, z, 2);
+
+                GameObject go = Instantiate(m_grassPrefab);
+                go.SetActive(true);
+                go.name = "Grass2";
+                go.transform.position = new Vector3(x, 0, z);
+                go.transform.SetParent(container);
+            }
         }
     }
 

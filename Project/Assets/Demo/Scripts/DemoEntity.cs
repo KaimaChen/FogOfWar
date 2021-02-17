@@ -4,7 +4,6 @@ public class DemoEntity : MonoBehaviour
 {
     public int m_mask;
     public float m_radius;
-    public short m_height;
 
     void OnDisable()
     {
@@ -13,7 +12,8 @@ public class DemoEntity : MonoBehaviour
 
     void Update()
     {
-        UnitVision unit = new UnitVision(gameObject, m_mask, m_radius, m_height);
+        FogOfWarMgr.Instance.TerrainGrid.GetData(transform.position, out short altitude, out short grassId);
+        UnitVision unit = new UnitVision(gameObject, m_mask, m_radius, altitude, grassId);
         Demo.Instance.UpdateUnit(GetInstanceID(), unit);
     }
 }
